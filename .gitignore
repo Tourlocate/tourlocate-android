@@ -1,0 +1,16 @@
+# Node-Abhängigkeiten (werden per npm install erzeugt, nicht eingecheckt)
+node_modules/
+
+# Diverses
+.DS_Store
+*.log
+
+# Hinweis: der Ordner android/ (nach `npx cap add android`) WIRD eingecheckt.
+# Capacitor legt dort eine eigene android/.gitignore für Build-Artefakte an
+# (build/, .gradle/, local.properties …) — die reicht dafür aus.
+#
+# Signatur-Schlüssel (*.jks / *.keystore) und Keystore-Passwörter NIEMALS
+# einchecken:
+*.jks
+*.keystore
+keystore.properties

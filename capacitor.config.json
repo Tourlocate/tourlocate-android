@@ -1,0 +1,10 @@
+{
+  "appId": "de.arcoworld.tourlocate",
+  "appName": "Tourlocate",
+  "webDir": "www",
+  "server": {
+    "url": "https://tourlocate.arcoworld.de",
+    "androidScheme": "https",
+    "cleartext": false
+  }
+}
