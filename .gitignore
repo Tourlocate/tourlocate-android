@@ -1,9 +1,16 @@
 # Node-Abhängigkeiten (werden per npm install erzeugt, nicht eingecheckt)
 node_modules/
 
+# Lokale Instanz-Konfiguration: enthält die server.url DEINER eigenen
+# Tourlocate-Instanz → NICHT einchecken. Vorlage: capacitor.config.sample.json
+capacitor.config.json
+
 # Diverses
 .DS_Store
 *.log
+
+# Android-Studio-Projektdaten (lokal, werden von AS neu erzeugt)
+android/.idea/
 
 # Hinweis: der Ordner android/ (nach `npx cap add android`) WIRD eingecheckt.
 # Capacitor legt dort eine eigene android/.gitignore für Build-Artefakte an

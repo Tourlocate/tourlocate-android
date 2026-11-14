@@ -1,9 +1,10 @@
 # Tourlocate App (Capacitor / Android)
 
 Native Android-Hülle um die Tourlocate-Web-App, gebaut mit [Capacitor](https://capacitorjs.com/).
-Die App lädt die **live gehostete Seite** (`https://tourlocate.arcoworld.de`) in einer WebView
-und ergänzt – schrittweise – native Funktionen, die als reine Web-App nicht möglich sind
-(z. B. „Foto ins Album speichern", später Hintergrund-Standort-Teilen).
+Die App lädt eine **selbst gehostete Tourlocate-Instanz** (deren URL du selbst konfigurierst,
+siehe [Einrichten & bauen](#einrichten--bauen)) in einer WebView und ergänzt – schrittweise –
+native Funktionen, die als reine Web-App nicht möglich sind (z. B. „Foto ins Album speichern",
+später Hintergrund-Standort-Teilen).
 
 Die Web-App selbst liegt im Hauptrepo [`Tourlocate/tourlocate`](https://github.com/Tourlocate/tourlocate);
 dieses Repo enthält **nur** die native Hülle.
@@ -17,16 +18,21 @@ dieses Repo enthält **nur** die native Hülle.
 ## Einrichten & bauen
 
 ```bash
-# 1. Abhängigkeiten installieren
+# 1. Konfiguration anlegen (enthält die URL DEINER Tourlocate-Instanz)
+cp capacitor.config.sample.json capacitor.config.json
+#    danach in capacitor.config.json server.url auf deine Instanz setzen,
+#    inkl. /app/ für den Login-Bereich, z. B. https://tour.example.org/app/
+
+# 2. Abhängigkeiten installieren
 npm install
 
-# 2. Android-Projekt erzeugen (legt den Ordner android/ an)
+# 3. Android-Projekt erzeugen (legt den Ordner android/ an)
 npx cap add android
 
-# 3. Web-Konfiguration ins native Projekt übernehmen
+# 4. Web-Konfiguration ins native Projekt übernehmen
 npx cap sync
 
-# 4. In Android Studio öffnen und starten
+# 5. In Android Studio öffnen und starten
 npx cap open android
 ```
 
@@ -44,9 +50,18 @@ Den Keystore **niemals** einchecken (siehe `.gitignore`).
 
 ## Konfiguration (`capacitor.config.json`)
 
-- `server.url` → zeigt auf die live gehostete Seite. Änderst du sie, danach `npx cap sync`.
+`capacitor.config.json` ist **bewusst NICHT im Repo** (sie enthält die URL einer konkreten
+Instanz). Lege sie aus der Vorlage an und trage deine **eigene** Instanz ein:
+
+```bash
+cp capacitor.config.sample.json capacitor.config.json
+```
+
+- `server.url` → **deine eigene** Tourlocate-Instanz, inkl. `/app/` (Login-Bereich), z. B.
+  `https://tour.example.org/app/`. Nach Änderungen `npx cap sync`.
 - `appId` = `de.arcoworld.tourlocate` — die eindeutige App-Kennung (identifiziert die App auf
-  dem Gerät / im Store; nicht leichtfertig ändern).
+  dem Gerät / im Store; nicht leichtfertig ändern). Für eine **eigene Veröffentlichung** eine
+  eigene Kennung wählen.
 - `appName` = `Tourlocate` — der angezeigte App-Name.
 
 Weil die Hülle die Live-Seite lädt, erscheinen **Änderungen an der Web-App automatisch** –

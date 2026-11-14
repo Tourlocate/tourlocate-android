@@ -3,7 +3,7 @@
   "appName": "Tourlocate",
   "webDir": "www",
   "server": {
-    "url": "https://tourlocate.arcoworld.de",
+    "url": "https://your-tourlocate-instance.example/app/",
     "androidScheme": "https",
     "cleartext": false
   }
