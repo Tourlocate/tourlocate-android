@@ -51,8 +51,8 @@ Den Keystore **niemals** einchecken (siehe `.gitignore`).
 ## Konfiguration (`capacitor.config.json`)
 
 `capacitor.config.json` ist **bewusst noch NICHT im Repo** (sie enthält die URL einer konkreten
-Instanz). **Lege sie an** , indem du und in der Beispieldatei capacitor.config.sample.json deine **eigene** Instanz 
-einträgst und diese **Beispieldatei in capacitor.config.json umbenennst**:
+Instanz). **Lege sie an** , indem du die **Beispieldatei capacitor.config.sample.json kopierst** 
+die Kopie in capacitor.config.json umbenennst und dort **eigene** Instanz einträgst.
 
 ```bash
 cp capacitor.config.sample.json capacitor.config.json
