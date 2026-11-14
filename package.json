@@ -9,6 +9,7 @@
     "open:android": "cap open android"
   },
   "dependencies": {
+    "@capacitor-community/media": "^7.0.1",
     "@capacitor/android": "^6.1.2",
     "@capacitor/core": "^6.1.2",
     "@capacitor/geolocation": "^6.1.1"
