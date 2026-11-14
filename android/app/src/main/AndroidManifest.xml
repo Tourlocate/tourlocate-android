@@ -43,4 +43,10 @@
          muss aber bewusst hier im App-Manifest stehen -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- „Foto ins Album" (eigenes GalleryPlugin): nur für Android ≤ 9 nötig, um
+         direkt nach DCIM zu schreiben. Ab Android 10 (API 29) läuft es über
+         MediaStore ohne jede Berechtigung. -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+                     android:maxSdkVersion="28" />
 </manifest>
