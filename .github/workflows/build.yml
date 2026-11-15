@@ -1,0 +1,64 @@
+name: Build Android APK
+
+# Baut die APK auf GitHubs Servern – niemand braucht lokal Android Studio.
+# - Bei jedem Push auf main (und manuell): Debug-APK als herunterladbares
+#   Artifact der Action.
+# - Bei einem Versions-Tag (v*): zusätzlich ein öffentliches Release mit der APK.
+#
+# Die APK ist universell (keine eingebaute Server-URL): Beim ersten Start
+# fragt die App, mit welcher Tourlocate-Instanz sie sich verbinden soll.
+# Darum braucht der Build KEINE Secrets und kein Fork-Setup.
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  workflow_dispatch:
+
+permissions:
+  contents: write   # nötig, damit GITHUB_TOKEN bei Tags ein Release anlegen darf
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code auschecken
+        uses: actions/checkout@v4
+
+      - name: Node einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: JDK 17 einrichten
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Abhängigkeiten installieren
+        run: npm ci
+
+      - name: Capacitor-Sync (Web-Assets + Plugins ins Android-Projekt)
+        run: npx cap sync android
+
+      - name: Debug-APK bauen
+        run: |
+          chmod +x android/gradlew
+          cd android && ./gradlew assembleDebug --no-daemon
+
+      - name: APK umbenennen
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk tourlocate-debug.apk
+
+      - name: APK als Artifact hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: tourlocate-debug-apk
+          path: tourlocate-debug.apk
+
+      - name: Release anlegen (nur bei Versions-Tag v*)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: tourlocate-debug.apk
