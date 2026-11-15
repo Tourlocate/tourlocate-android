@@ -19,6 +19,8 @@ import androidx.core.app.NotificationCompat;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -111,7 +113,23 @@ public class LiveShareService extends Service {
                 c.setDoOutput(true);
                 c.setRequestProperty("Content-Type", "application/json");
                 try (OutputStream os = c.getOutputStream()) { os.write(data); }
-                c.getResponseCode(); // Antwort auslesen (schließt die Verbindung sauber ab)
+                int status = c.getResponseCode();
+                // Antwort auswerten: Meldet der Server die Sitzung als beendet/
+                // abgelaufen (active:false), den Dienst selbst stoppen — sonst
+                // liefe er mit Benachrichtigung + GPS endlos weiter.
+                if (status == 200) {
+                    try (InputStream is = c.getInputStream()) {
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        byte[] buf = new byte[1024];
+                        int n;
+                        while ((n = is.read(buf)) > 0 && bos.size() < 4096) bos.write(buf, 0, n);
+                        JSONObject resp = new JSONObject(bos.toString("UTF-8"));
+                        if (!resp.optBoolean("active", true)) stopSelf();
+                    }
+                } else if (status == 403) {
+                    // Secret ungültig (z. B. neue Sitzung gestartet) → aufhören.
+                    stopSelf();
+                }
             } catch (Exception e) {
                 // Netzfehler ignorieren — der nächste Standort-Fix versucht es erneut.
             } finally {

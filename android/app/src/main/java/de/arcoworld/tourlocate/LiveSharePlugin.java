@@ -51,4 +51,24 @@ public class LiveSharePlugin extends Plugin {
         ret.put("running", LiveShareService.RUNNING);
         call.resolve(ret);
     }
+
+    // Link im SYSTEM-Browser öffnen (statt in der App-WebView). Für den
+    // Eigencheck „Ansicht öffnen": So bleibt die App auf der Teilen-Seite,
+    // während der Betrachter parallel im Browser läuft.
+    @PluginMethod
+    public void openExternal(PluginCall call) {
+        String url = call.getString("url");
+        if (url == null || !(url.startsWith("https://") || url.startsWith("http://"))) {
+            call.reject("bad-url");
+            return;
+        }
+        try {
+            Intent i = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url));
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(i);
+            call.resolve();
+        } catch (Exception e) {
+            call.reject("open-failed", e);
+        }
+    }
 }
