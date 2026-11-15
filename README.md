@@ -55,7 +55,7 @@ Instanz die App lädt, wählt man **beim ersten Start in der App selbst** (Serve
 die Wahl landet in den App-Einstellungen auf dem Gerät, nicht im Code. Dieselbe APK
 funktioniert dadurch für **jede** Tourlocate-Instanz.
 
-- `appId` = `de.arcoworld.tourlocate` — die eindeutige App-Kennung (identifiziert die App auf
+- `appId` = `org.tourlocate.app` — die eindeutige App-Kennung (identifiziert die App auf
   dem Gerät / im Store; nicht leichtfertig ändern). Für eine **eigene Veröffentlichung** eine
   eigene Kennung wählen.
 - `appName` = `Tourlocate` — der angezeigte App-Name.

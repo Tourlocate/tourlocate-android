@@ -1,4 +1,4 @@
-package de.arcoworld.tourlocate;
+package org.tourlocate.app;
 
 import android.content.Intent;
 import android.os.Build;

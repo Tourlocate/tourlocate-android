@@ -1,4 +1,4 @@
-package de.arcoworld.tourlocate;
+package org.tourlocate.app;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
