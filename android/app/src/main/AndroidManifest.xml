@@ -33,6 +33,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
+
+        <!-- Nativer Live-Standort-Upload-Dienst (eigenes LiveSharePlugin):
+             läuft am eingefrorenen WebView-JS vorbei bei gesperrtem Display. -->
+        <service
+            android:name=".LiveShareService"
+            android:foregroundServiceType="location"
+            android:exported="false" />
     </application>
 
     <!-- Permissions -->
@@ -43,6 +50,13 @@
          muss aber bewusst hier im App-Manifest stehen -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- Vordergrund-Dienst für den nativen Live-Standort-Upload
+         (LiveShareService). Diese Berechtigungen brachte früher das
+         background-geolocation-Plugin mit; da es entfernt wird, hier selbst. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- „Foto ins Album" (eigenes GalleryPlugin): nur für Android ≤ 9 nötig, um
          direkt nach DCIM zu schreiben. Ab Android 10 (API 29) läuft es über
