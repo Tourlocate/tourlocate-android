@@ -1,10 +1,6 @@
 # Node-Abhängigkeiten (werden per npm install erzeugt, nicht eingecheckt)
 node_modules/
 
-# Lokale Instanz-Konfiguration: enthält die server.url DEINER eigenen
-# Tourlocate-Instanz → NICHT einchecken. Vorlage: capacitor.config.sample.json
-capacitor.config.json
-
 # Diverses
 .DS_Store
 *.log

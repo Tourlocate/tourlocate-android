@@ -3,12 +3,92 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Tourlocate</title>
+  <title>Tourlocate — Server wählen</title>
+  <style>
+    body{margin:0;font-family:system-ui,sans-serif;background:#f4f6f8;color:#1a1a1a;
+         display:flex;min-height:100vh;align-items:center;justify-content:center;padding:16px}
+    .card{background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,.1);
+          padding:28px 26px;width:100%;max-width:360px;box-sizing:border-box}
+    h1{font-size:18px;margin:0 0 6px}
+    p{font-size:13px;color:#555;margin:0 0 14px;line-height:1.45}
+    label{display:block;font-size:13px;margin:10px 0 4px;color:#444}
+    input{width:100%;box-sizing:border-box;padding:10px;border:1px solid #cbd2d9;
+          border-radius:7px;font:inherit}
+    button{width:100%;margin-top:16px;padding:11px;border:0;border-radius:7px;
+           background:#2b6cb0;color:#fff;font:inherit;font-weight:600;cursor:pointer}
+    button:disabled{opacity:.6}
+    .msg{margin-top:12px;font-size:13px;min-height:1em;color:#c0392b}
+    .hint{margin-top:16px;font-size:11px;color:#98a2ad;line-height:1.4}
+  </style>
 </head>
-<body style="font-family:system-ui,sans-serif;display:grid;place-items:center;height:100vh;margin:0;color:#334">
-  <!-- Fallback-Inhalt: Capacitor lädt per server.url die Live-Seite (/app/);
-       diese Seite erscheint nur ganz kurz beim Start bzw. wenn die Seite
-       offline nicht erreichbar ist. -->
-  <p>Tourlocate wird geladen…</p>
+<body>
+<div class="card">
+  <h1>Tourlocate</h1>
+  <p>Mit welchem Tourlocate&#8209;Server möchtest du dich verbinden?
+     Gib die Adresse deiner Instanz ein.</p>
+  <form id="f">
+    <label for="srv">Server-Adresse</label>
+    <input id="srv" type="text" inputmode="url" autocapitalize="off" autocorrect="off"
+           spellcheck="false" placeholder="z. B. tour.example.org" autofocus>
+    <button type="submit" id="btn">Verbinden</button>
+  </form>
+  <div class="msg" id="msg"></div>
+  <div class="hint">Die Verbindung erfolgt immer verschlüsselt (https).
+     Server später wechseln: in Tourlocate abmelden &#8594; „Server wechseln" —
+     oder notfalls in den Android-Einstellungen die App-Daten löschen.</div>
+</div>
+
+<script>
+// Eingabe zur App-URL der Instanz normalisieren:
+// "tour.example.org"            → https://tour.example.org/app/
+// "https://host/unterordner"    → https://host/unterordner/app/
+// "https://host/app/"           → unverändert
+function normalize(input) {
+  let u = (input || '').trim();
+  if (!u) return { err: 'Bitte eine Server-Adresse eingeben.' };
+  if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(u)) u = 'https://' + u;
+  if (!/^https:\/\//i.test(u)) return { err: 'Nur https-Adressen sind möglich.' };
+  u = u.replace(/[?#].*$/, '').replace(/\/+$/, '');
+  if (!/\/app$/i.test(u)) u += '/app';
+  try { new URL(u); } catch (e) { return { err: 'Das ist keine gültige Adresse.' }; }
+  return { url: u + '/' };
+}
+
+const msg = document.getElementById('msg');
+const btn = document.getElementById('btn');
+
+document.getElementById('f').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  msg.textContent = '';
+  const n = normalize(document.getElementById('srv').value);
+  if (n.err) { msg.textContent = n.err; return; }
+
+  const SC = window.Capacitor && window.Capacitor.Plugins
+    && window.Capacitor.Plugins.ServerConfig;
+  if (!SC) { msg.textContent = 'Interner Fehler: natives Plugin fehlt.'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Prüfe Server…';
+  try {
+    // Erreichbarkeits-Probe (no-cors: liefert bei fremder Herkunft nur
+    // "antwortet überhaupt" — genau das reicht, um Tippfehler/Offline
+    // abzufangen, bevor die Adresse gespeichert wird).
+    await fetch(n.url, { mode: 'no-cors', cache: 'no-store' });
+  } catch (err) {
+    msg.textContent = 'Server nicht erreichbar — Adresse prüfen (Tippfehler? Offline?).';
+    btn.disabled = false;
+    btn.textContent = 'Verbinden';
+    return;
+  }
+  btn.textContent = 'Verbinde…';
+  try {
+    await SC.set({ url: n.url }); // speichert + startet neu → lädt die Instanz
+  } catch (err) {
+    msg.textContent = 'Speichern fehlgeschlagen: ' + (err && err.message || err);
+    btn.disabled = false;
+    btn.textContent = 'Verbinden';
+  }
+});
+</script>
 </body>
 </html>
