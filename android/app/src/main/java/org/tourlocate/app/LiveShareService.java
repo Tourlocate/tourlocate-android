@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -148,6 +149,10 @@ public class LiveShareService extends Service {
             .setContentTitle("Tourlocate")
             .setContentText("Dein Standort wird gerade geteilt")
             .setSmallIcon(android.R.drawable.ic_menu_mylocation)
+            // Großes Farb-Logo in der aufgeklappten Benachrichtigung /
+            // auf dem Sperrbildschirm; kleines Status-Icon bleibt die
+            // (tönbare) Standort-Nadel.
+            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_notif_logo))
             .setOngoing(true)
             .setContentIntent(pi)
             .build();
